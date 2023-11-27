@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     private void GatherInput()
     {
+        
         _frameInput = new FrameInput
         {
             JumpDown = Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.C),
@@ -64,7 +65,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         if (_frameInput.MouseDown && CanUseProjectile) _frameMouseClicked = _time;
         if (_frameInput.MouseHeld && _frameMouseClicked == 0 && CanUseProjectile) _frameMouseClicked = _time;
 
-        if (_frameInput.MouseHeld)
+        if (_frameInput.MouseHeld && _time - _frameMouseClicked < _stats.ProjectileHoldTime * 3)
         {
             _slowGravity = true;
         }
@@ -79,11 +80,13 @@ public class PlayerController : MonoBehaviour, IPlayerController
             {
                 _projectileLevel = 1;
                 _projectileToConsume = true;
+                _frameMouseUp = _time;
             }
             else if (_time - _frameMouseClicked < _stats.ProjectileHoldTime * 2)
             {
                 _projectileLevel = 2;
                 _projectileToConsume = true;
+                _frameMouseUp = _time;
             }
             else
             //if(_time - _frameMouseClicked < _stats.ProjectileHoldTime * 3)
@@ -92,7 +95,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
                 _projectileToConsume = true;
                 _frameMouseClicked = 0;
                 _frameMouseUp = _time;
-            }    
+            }
         }
     }
 
@@ -212,12 +215,19 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private float _frameMouseUp;
     private int _projectileLevel;
     private bool _projectileToConsume;
-    private bool CanUseProjectile => _time - _frameMouseUp >= _stats.ProjectileCooldown;
+    private bool CanUseProjectile => _time >= _stats.ProjectileCooldown + _frameMouseUp;
 
     private void HandleProjectile()
     {
-        if (!_projectileToConsume) return;
-        if (!_grounded && CanUseProjectile) FireProjectile();
+        Debug.Log(CanUseProjectile);
+        if (!_projectileToConsume)
+        {
+            return;
+        }
+        if (!_grounded && CanUseProjectile)
+        {
+            FireProjectile();
+        }
 
         _projectileToConsume = false;
     }
@@ -249,7 +259,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
             var inAirGravity = _stats.FallAcceleration;
             //if (_endedJumpEarly && _frameVelocity.y > 0) inAirGravity *= _stats.JumpEndEarlyGravityModifier;
             if (_slowGravity && CanUseProjectile && _frameVelocity.y < 0) inAirGravity *= _stats.MouseHeldGravityModifier;
-            if (_endedJumpEarly && _frameVelocity.y > 0 && _time - _frameLeftGrounded > _stats.AirTime) inAirGravity *= _stats.JumpEndEarlyGravityModifier;
+            if (_endedJumpEarly && _frameVelocity.y > 0 && _time > _stats.AirTime + _frameLeftGrounded) inAirGravity *= _stats.JumpEndEarlyGravityModifier;
             _frameVelocity.y = Mathf.MoveTowards(_frameVelocity.y, -_stats.MaxFallSpeed, inAirGravity * Time.fixedDeltaTime);
         }
     }
