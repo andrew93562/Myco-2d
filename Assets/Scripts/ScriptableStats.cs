@@ -75,4 +75,14 @@ public class ScriptableStats : ScriptableObject
     [Tooltip("How long after firing a projectile before another may be fired")]
     public float ProjectileCooldown = 0.5f;
 
+    [Tooltip("The amount of time jump must be held to count as a full hop")]
+    public float JumpSquat = 0.5f;
+
+    [Tooltip("Immediate upward velocity applied on a short hop")]
+    public float ShortHopPower = 15;
+
+    [Tooltip("Immediate upward velocity applied on a full hop")]
+    public float FullHopPower = 30;
+
+
 }

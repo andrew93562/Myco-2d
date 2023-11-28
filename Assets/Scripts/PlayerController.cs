@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         {
             JumpDown = Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.C),
             JumpHeld = Input.GetButton("Jump") || Input.GetKey(KeyCode.C),
+            JumpUp = Input.GetButtonUp("Jump"),
             Move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")),
             MouseDown = Input.GetMouseButtonDown(0),
             MouseHeld = Input.GetMouseButton(0),
@@ -58,8 +59,21 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
         if (_frameInput.JumpDown)
         {
-            _jumpToConsume = true;
             _timeJumpWasPressed = _time;
+        }
+        if (_frameInput.JumpUp)
+        {
+            if (_time - _timeJumpWasPressed < _stats.JumpSquat && _grounded)
+            {
+                _shortHopToConsume = true;
+            }
+        }
+        if (_frameInput.JumpHeld)
+        {
+            if (_time - _timeJumpWasPressed >= _stats.JumpSquat)
+            {
+                _fullHopToConsume = true;
+            }
         }
 
         if (_frameInput.MouseDown && CanUseProjectile) _frameMouseClicked = _time;
@@ -80,22 +94,21 @@ public class PlayerController : MonoBehaviour, IPlayerController
             {
                 _projectileLevel = 1;
                 _projectileToConsume = true;
-                _frameMouseUp = _time;
+                //_frameMouseUp = _time;
             }
             else if (_time - _frameMouseClicked < _stats.ProjectileHoldTime * 2)
             {
                 _projectileLevel = 2;
                 _projectileToConsume = true;
-                _frameMouseUp = _time;
+                //_frameMouseUp = _time;
             }
-            else
-            //if(_time - _frameMouseClicked < _stats.ProjectileHoldTime * 3)
+            else if(_time - _frameMouseClicked < _stats.ProjectileHoldTime * 3)
             {
                 _projectileLevel = 3;
                 _projectileToConsume = true;
-                _frameMouseClicked = 0;
-                _frameMouseUp = _time;
             }
+            _frameMouseClicked = 0;
+            _frameMouseUp = _time;
         }
     }
 
@@ -123,9 +136,13 @@ public class PlayerController : MonoBehaviour, IPlayerController
         // Ground and Ceiling
         bool groundHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.down, _stats.GrounderDistance, ~_stats.PlayerLayer);
         bool ceilingHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.up, _stats.GrounderDistance, ~_stats.PlayerLayer);
+        bool leftWallHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.left, _stats.GrounderDistance, ~_stats.PlayerLayer);
+        bool rightWallHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.right, _stats.GrounderDistance, ~_stats.PlayerLayer);
 
         // Hit a Ceiling
         if (ceilingHit) _frameVelocity.y = Mathf.Min(0, _frameVelocity.y);
+        if (leftWallHit || rightWallHit) _frameVelocity.x = Mathf.Sign(_frameVelocity.x) * Mathf.Min(0, Mathf.Abs(_frameVelocity.x));
+
 
         // Landed on the Ground
         if (!_grounded && groundHit)
@@ -133,7 +150,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
             _grounded = true;
             _coyoteUsable = true;
             _bufferedJumpUsable = true;
-            _endedJumpEarly = false;
+            //_endedJumpEarly = false;
             GroundedChanged?.Invoke(true, Mathf.Abs(_frameVelocity.y));
         }
         // Left the Ground
@@ -152,9 +169,12 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     #region Jumping
 
-    private bool _jumpToConsume = false;
+    //private bool _jumpToConsume = false;
+    private bool _shortHopToConsume = false;
+    private bool _fullHopToConsume = false;
+
     private bool _bufferedJumpUsable;
-    private bool _endedJumpEarly;
+    //private bool _endedJumpEarly;
     private bool _coyoteUsable;
     private float _timeJumpWasPressed;
 
@@ -164,29 +184,46 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private void HandleJump()
     {
         //if (!_endedJumpEarly && !_grounded && !_frameInput.JumpHeld && _rb.velocity.y > 0) _endedJumpEarly = true;
+        /*
         if (!_endedJumpEarly && !_grounded && !_frameInput.JumpHeld && _rb.velocity.y > 0 && _time - _frameLeftGrounded < _stats.HoldTime)
         {
             _endedJumpEarly = true;
         }
-
         if (!_jumpToConsume && !HasBufferedJump) return;
 
         if (_jumpToConsume)
         {
             if (_grounded || CanUseCoyote) ExecuteJump();
         }
-        
-
         _jumpToConsume = false;
+        */
+        if (!_shortHopToConsume && !_fullHopToConsume && !HasBufferedJump) return;
+
+
+        if (_shortHopToConsume || _fullHopToConsume)
+        {
+            if (_grounded || CanUseCoyote) ExecuteJump();
+        }
+
+        _shortHopToConsume = false;
+        _fullHopToConsume = false;
     }
 
     private void ExecuteJump()
     {
-        _endedJumpEarly = false;
+        //_endedJumpEarly = false;
         _timeJumpWasPressed = 0;
         _bufferedJumpUsable = false;
         _coyoteUsable = false;
-        _frameVelocity.y = _stats.JumpPower;
+        if (_shortHopToConsume)
+        {
+            _frameVelocity.y = _stats.ShortHopPower;
+        }
+        else
+        {
+            _frameVelocity.y = _stats.FullHopPower;
+        }
+        //_frameVelocity.y = _stats.JumpPower;
         Jumped?.Invoke();
     }
 
@@ -215,31 +252,43 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private float _frameMouseUp;
     private int _projectileLevel;
     private bool _projectileToConsume;
-    private bool CanUseProjectile => _time >= _stats.ProjectileCooldown + _frameMouseUp;
+    private bool CanUseProjectile;
+    private float _frameLastFired;
 
     private void HandleProjectile()
     {
-        Debug.Log(CanUseProjectile);
+        CanUseProjectile = _time >= _stats.ProjectileCooldown + _frameLastFired;
+        //if (_time >= _frameLastFired + _stats.ProjectileCooldown) _frameLastFired = 0;
+        //Debug.Log(CanUseProjectile + " " + _projectileToConsume);
         if (!_projectileToConsume)
         {
             return;
         }
-        if (!_grounded && CanUseProjectile)
+        if (CanUseProjectile)
         {
             FireProjectile();
         }
 
         _projectileToConsume = false;
+        
     }
 
     private void FireProjectile()
     {
+        //Debug.Log("firing projectile");
         Vector3 mousePos3D = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2 mousePos = new Vector2(mousePos3D.x, mousePos3D.y);
-        Vector2 rbPosition = new Vector2(_rb.transform.position.x, _rb.transform.position.y);
 
-        Vector2 direction = (mousePos - rbPosition).normalized;
-        _frameVelocity += -direction * _stats.ProjectileVelocity * _projectileLevel;
+        if (!_grounded)
+        {
+            Vector2 rbPosition = new Vector2(_rb.transform.position.x, _rb.transform.position.y);
+
+            Vector2 direction = (mousePos - rbPosition).normalized;
+            _frameVelocity += -direction * _stats.ProjectileVelocity * _projectileLevel;
+        }
+
+        _frameLastFired = _time;
+        // have an action here that calls the projectile into existence
     }
 
     #endregion
@@ -259,7 +308,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
             var inAirGravity = _stats.FallAcceleration;
             //if (_endedJumpEarly && _frameVelocity.y > 0) inAirGravity *= _stats.JumpEndEarlyGravityModifier;
             if (_slowGravity && CanUseProjectile && _frameVelocity.y < 0) inAirGravity *= _stats.MouseHeldGravityModifier;
-            if (_endedJumpEarly && _frameVelocity.y > 0 && _time > _stats.AirTime + _frameLeftGrounded) inAirGravity *= _stats.JumpEndEarlyGravityModifier;
+            //if (_endedJumpEarly && _frameVelocity.y > 0 && _time > _stats.AirTime + _frameLeftGrounded) inAirGravity *= _stats.JumpEndEarlyGravityModifier;
             _frameVelocity.y = Mathf.MoveTowards(_frameVelocity.y, -_stats.MaxFallSpeed, inAirGravity * Time.fixedDeltaTime);
         }
     }
@@ -280,6 +329,7 @@ public struct FrameInput
 {
     public bool JumpDown;
     public bool JumpHeld;
+    public bool JumpUp;
     public Vector2 Move;
     public bool MouseDown;
     public bool MouseHeld;
