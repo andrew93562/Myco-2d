@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private FrameInput _frameInput;
     private Vector2 _frameVelocity;
     private bool _cachedQueryStartInColliders;
+    public GameObject projectilePrefab;
+    [SerializeField] GameEvent TriggerInteraction;
 
     #region Interface
 
@@ -36,6 +38,13 @@ public class PlayerController : MonoBehaviour, IPlayerController
         //revert to 0 on scene change
         GatherInput();
     }
+    private enum FireState
+    {
+        playing,
+        inUI
+    }
+
+    private FireState currentFireState = FireState.playing;
 
     private void GatherInput()
     {
@@ -94,13 +103,11 @@ public class PlayerController : MonoBehaviour, IPlayerController
             {
                 _projectileLevel = 1;
                 _projectileToConsume = true;
-                //_frameMouseUp = _time;
             }
             else if (_time - _frameMouseClicked < _stats.ProjectileHoldTime * 2)
             {
                 _projectileLevel = 2;
                 _projectileToConsume = true;
-                //_frameMouseUp = _time;
             }
             else if (_time - _frameMouseClicked < _stats.ProjectileHoldTime * 3)
             {
@@ -150,7 +157,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
             _grounded = true;
             _coyoteUsable = true;
             _bufferedJumpUsable = true;
-            //_endedJumpEarly = false;
             GroundedChanged?.Invoke(true, Mathf.Abs(_frameVelocity.y));
         }
         // Left the Ground
@@ -166,15 +172,12 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     #endregion
 
-
     #region Jumping
 
-    //private bool _jumpToConsume = false;
     private bool _shortHopToConsume = false;
     private bool _fullHopToConsume = false;
 
     private bool _bufferedJumpUsable;
-    //private bool _endedJumpEarly;
     private bool _coyoteUsable;
     private float _timeJumpWasPressed;
 
@@ -183,20 +186,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     private void HandleJump()
     {
-        //if (!_endedJumpEarly && !_grounded && !_frameInput.JumpHeld && _rb.velocity.y > 0) _endedJumpEarly = true;
-        /*
-        if (!_endedJumpEarly && !_grounded && !_frameInput.JumpHeld && _rb.velocity.y > 0 && _time - _frameLeftGrounded < _stats.HoldTime)
-        {
-            _endedJumpEarly = true;
-        }
-        if (!_jumpToConsume && !HasBufferedJump) return;
-
-        if (_jumpToConsume)
-        {
-            if (_grounded || CanUseCoyote) ExecuteJump();
-        }
-        _jumpToConsume = false;
-        */
         if (!_shortHopToConsume && !_fullHopToConsume && !HasBufferedJump) return;
 
 
@@ -211,7 +200,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     private void ExecuteJump()
     {
-        //_endedJumpEarly = false;
         _timeJumpWasPressed = 0;
         _bufferedJumpUsable = false;
         _coyoteUsable = false;
@@ -223,8 +211,60 @@ public class PlayerController : MonoBehaviour, IPlayerController
         {
             _frameVelocity.y = _stats.FullHopPower;
         }
-        //_frameVelocity.y = _stats.JumpPower;
         Jumped?.Invoke();
+    }
+
+    #endregion
+
+    #region Projectile
+
+    private float _frameMouseClicked;
+    private float _frameMouseUp;
+    private int _projectileLevel;
+    private bool _projectileToConsume;
+    private bool CanUseProjectile;
+    private float _frameLastFired;
+
+    private void HandleProjectile()
+    {
+        CanUseProjectile = _time >= _stats.ProjectileCooldown + _frameLastFired;
+        if (!_projectileToConsume)
+        {
+            return;
+        }
+        if (CanUseProjectile)
+        {
+            FireProjectile();
+        }
+
+        _projectileToConsume = false;
+
+    }
+
+    private void FireProjectile()
+    {
+        switch (currentFireState)
+        {
+            case FireState.playing:
+                Vector3 mousePos3D = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Vector2 mousePos = new Vector2(mousePos3D.x, mousePos3D.y);
+
+                if (!_grounded)
+                {
+                    Vector2 rbPosition = new Vector2(_rb.transform.position.x, _rb.transform.position.y);
+
+                    Vector2 direction = (mousePos - rbPosition).normalized;
+                    _frameVelocity += -direction * _stats.ProjectileVelocity * _projectileLevel;
+                }
+
+                _frameLastFired = _time;
+                // have an action here that calls the projectile into existence
+                return;
+            case FireState.inUI:
+                TriggerInteraction.Raise(this, null);
+                return;
+        }
+
     }
 
     #endregion
@@ -246,53 +286,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     #endregion
 
-    #region Projectile
-
-    private float _frameMouseClicked;
-    private float _frameMouseUp;
-    private int _projectileLevel;
-    private bool _projectileToConsume;
-    private bool CanUseProjectile;
-    private float _frameLastFired;
-
-    private void HandleProjectile()
-    {
-        CanUseProjectile = _time >= _stats.ProjectileCooldown + _frameLastFired;
-        //if (_time >= _frameLastFired + _stats.ProjectileCooldown) _frameLastFired = 0;
-        //Debug.Log(CanUseProjectile + " " + _projectileToConsume);
-        if (!_projectileToConsume)
-        {
-            return;
-        }
-        if (CanUseProjectile)
-        {
-            FireProjectile();
-        }
-
-        _projectileToConsume = false;
-
-    }
-
-    private void FireProjectile()
-    {
-        //Debug.Log("firing projectile");
-        Vector3 mousePos3D = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 mousePos = new Vector2(mousePos3D.x, mousePos3D.y);
-
-        if (!_grounded)
-        {
-            Vector2 rbPosition = new Vector2(_rb.transform.position.x, _rb.transform.position.y);
-
-            Vector2 direction = (mousePos - rbPosition).normalized;
-            _frameVelocity += -direction * _stats.ProjectileVelocity * _projectileLevel;
-        }
-
-        _frameLastFired = _time;
-        // have an action here that calls the projectile into existence
-    }
-
-    #endregion
-
     #region Gravity
 
     private void HandleGravity()
@@ -306,14 +299,29 @@ public class PlayerController : MonoBehaviour, IPlayerController
         else
         {
             var inAirGravity = _stats.FallAcceleration;
-            //if (_endedJumpEarly && _frameVelocity.y > 0) inAirGravity *= _stats.JumpEndEarlyGravityModifier;
-            if (_slowGravity && CanUseProjectile && _frameVelocity.y < 0) inAirGravity *= _stats.MouseHeldGravityModifier;
-            //if (_endedJumpEarly && _frameVelocity.y > 0 && _time > _stats.AirTime + _frameLeftGrounded) inAirGravity *= _stats.JumpEndEarlyGravityModifier;
-            _frameVelocity.y = Mathf.MoveTowards(_frameVelocity.y, -_stats.MaxFallSpeed, inAirGravity * Time.fixedDeltaTime);
+            var maxFallSpeed = _stats.MaxFallSpeed;
+            if (_slowGravity && CanUseProjectile && _frameVelocity.y < 0) maxFallSpeed = _stats.ChargingFallSpeed;
+            _frameVelocity.y = Mathf.MoveTowards(_frameVelocity.y, -maxFallSpeed, inAirGravity * Time.fixedDeltaTime);
         }
     }
 
     #endregion
+    public void SwitchState(Component sender, object data)
+    {
+        if (sender.GetType() != typeof(DialogueManager))
+        {
+            if (currentFireState == FireState.playing)
+            {
+                currentFireState = FireState.inUI;
+            }
+            else if (currentFireState == FireState.inUI)
+            {
+                currentFireState = FireState.playing;
+            }
+            //Debug.Log(currentFireState);
+        }
+
+    }
 
     private void ApplyMovement() => _rb.velocity = _frameVelocity;
 

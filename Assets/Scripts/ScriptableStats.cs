@@ -63,9 +63,6 @@ public class ScriptableStats : ScriptableObject
     [Tooltip("The amount of time before the increased gravity modifier takes effect on a short hop")]
     public float AirTime = 0.2f;
 
-    [Tooltip("Affects how slowly the player falls while charging the projectile")]
-    public float MouseHeldGravityModifier = 0.5f;
-
     [Tooltip("The amount of time it takes to charge the projectile one level")]
     public float ProjectileHoldTime = 0.2f;
 
@@ -84,5 +81,6 @@ public class ScriptableStats : ScriptableObject
     [Tooltip("Immediate upward velocity applied on a full hop")]
     public float FullHopPower = 30;
 
-
+    [Tooltip("Maximum downward velocity while charging the projectile")]
+    public float ChargingFallSpeed = 5;
 }

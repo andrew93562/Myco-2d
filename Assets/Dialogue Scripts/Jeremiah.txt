@@ -1,0 +1,13 @@
+#0
+Hello! My name is Jeremiah!
+How are you today?
+$0
+I'm looking for a bird.
+#1
+Have you tried asking someone really tall? They might know a thing or two about what's up there!
+$1
+I can't say I would have thought of that.
+#2
+Well, that's why I'm here!
+$2
+Thank you, Jeremiah.
