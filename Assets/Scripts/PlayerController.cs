@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     private void GatherInput()
     {
-        
+
         _frameInput = new FrameInput
         {
             JumpDown = Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.C),
@@ -102,7 +102,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
                 _projectileToConsume = true;
                 //_frameMouseUp = _time;
             }
-            else if(_time - _frameMouseClicked < _stats.ProjectileHoldTime * 3)
+            else if (_time - _frameMouseClicked < _stats.ProjectileHoldTime * 3)
             {
                 _projectileLevel = 3;
                 _projectileToConsume = true;
@@ -270,7 +270,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         }
 
         _projectileToConsume = false;
-        
+
     }
 
     private void FireProjectile()
@@ -297,7 +297,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     private void HandleGravity()
     {
-        
+
 
         if (_grounded && _frameVelocity.y <= 0f)
         {
