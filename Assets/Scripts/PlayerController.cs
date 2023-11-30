@@ -324,7 +324,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
 
                 float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-                Instantiate(projectilePrefab, transform.position + new Vector3(direction.x, direction.y, 1), Quaternion.Euler(0, 0, angle + 90));
+                Instantiate(projectilePrefab, transform.position + new Vector3(direction.x, direction.y, 1), Quaternion.identity);
                 // have an action here that calls the projectile into existence
                 return;
             case FireState.inUI:
