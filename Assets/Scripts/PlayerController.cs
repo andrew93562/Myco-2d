@@ -12,6 +12,9 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private bool _cachedQueryStartInColliders;
     public GameObject projectilePrefab;
     [SerializeField] GameEvent TriggerInteraction;
+    [SerializeField] GameEvent MannaChanged;
+    [SerializeField] GameObject pointer;
+    public int playerManna = 6;
 
     #region Interface
 
@@ -85,8 +88,16 @@ public class PlayerController : MonoBehaviour, IPlayerController
             }
         }
 
-        if (_frameInput.MouseDown && CanUseProjectile) _frameMouseClicked = _time;
-        if (_frameInput.MouseHeld && _frameMouseClicked == 0 && CanUseProjectile) _frameMouseClicked = _time;
+        if (_frameInput.MouseDown && CanUseProjectile)
+        {
+            _frameMouseClicked = _time;
+            pointer.SetActive(true);
+            //Debug.Log(playerManna);
+        }
+        if (_frameInput.MouseHeld && _frameMouseClicked == 0 && CanUseProjectile)
+        {
+            _frameMouseClicked = _time;
+        }
 
         if (_frameInput.MouseHeld && _time - _frameMouseClicked < _stats.ProjectileHoldTime * 3)
         {
@@ -99,23 +110,73 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
         if (_frameInput.MouseUp)
         {
+            pointer.SetActive(false);
             if (_time - _frameMouseClicked < _stats.ProjectileHoldTime)
             {
-                _projectileLevel = 1;
-                _projectileToConsume = true;
+                if (playerManna > 0 && !_grounded)
+                {
+                    _projectileToConsume = true;
+                    _projectileLevel = 1;
+                    playerManna -= 1;
+                    Debug.Log("lvl 1 projectile fired");
+                }
+                else
+                {
+                    _projectileToConsume = true;
+                    _projectileLevel = 0;
+                }
             }
             else if (_time - _frameMouseClicked < _stats.ProjectileHoldTime * 2)
             {
-                _projectileLevel = 2;
-                _projectileToConsume = true;
+                if (playerManna > 1 && !_grounded)
+                {
+                    _projectileToConsume = true;
+                    _projectileLevel = 2;
+                    playerManna -= 2;
+                }
+                else if (playerManna > 0 && !_grounded)
+                {
+                    _projectileToConsume = true;
+                    _projectileLevel = 1;
+                    playerManna -= 1;
+                }
+                else 
+                { 
+                    _projectileToConsume = true;
+                    _projectileLevel = 0;
+                }
             }
             else if (_time - _frameMouseClicked < _stats.ProjectileHoldTime * 3)
             {
-                _projectileLevel = 3;
-                _projectileToConsume = true;
+                if (playerManna > 2 && !_grounded)
+                {
+                    _projectileToConsume = true;
+                    _projectileLevel = 3;
+                    playerManna -= 3;
+                }
+
+                else if (playerManna > 1 && !_grounded)
+                {
+                    _projectileToConsume = true;
+                    _projectileLevel = 2;
+                    playerManna -= 2;
+                }
+                else if (playerManna > 0 && !_grounded)
+                {
+                    _projectileToConsume = true;
+                    _projectileLevel = 1;
+                    playerManna -= 1;
+                }
+                else
+                {
+                    _projectileToConsume = true;
+                    _projectileLevel = 0;
+                }
             }
             _frameMouseClicked = 0;
             _frameMouseUp = _time;
+            MannaChanged.Raise(this, playerManna);
+            //Debug.Log(_projectileToConsume);
         }
     }
 
@@ -228,15 +289,18 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private void HandleProjectile()
     {
         CanUseProjectile = _time >= _stats.ProjectileCooldown + _frameLastFired;
+        
         if (!_projectileToConsume)
         {
             return;
         }
+        
+
         if (CanUseProjectile)
         {
             FireProjectile();
         }
-
+        //Debug.Log(currentFireState);
         _projectileToConsume = false;
 
     }
@@ -248,23 +312,25 @@ public class PlayerController : MonoBehaviour, IPlayerController
             case FireState.playing:
                 Vector3 mousePos3D = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 Vector2 mousePos = new Vector2(mousePos3D.x, mousePos3D.y);
+                Vector2 rbPosition = new Vector2(_rb.transform.position.x, _rb.transform.position.y);
+                Vector2 direction = (mousePos - rbPosition).normalized;
 
                 if (!_grounded)
                 {
-                    Vector2 rbPosition = new Vector2(_rb.transform.position.x, _rb.transform.position.y);
-
-                    Vector2 direction = (mousePos - rbPosition).normalized;
                     _frameVelocity += -direction * _stats.ProjectileVelocity * _projectileLevel;
                 }
 
                 _frameLastFired = _time;
+
+
+                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                Instantiate(projectilePrefab, transform.position + new Vector3(direction.x, direction.y, 1), Quaternion.Euler(0, 0, angle + 90));
                 // have an action here that calls the projectile into existence
                 return;
             case FireState.inUI:
                 TriggerInteraction.Raise(this, null);
                 return;
         }
-
     }
 
     #endregion

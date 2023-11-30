@@ -12,7 +12,6 @@ public class InteractionBubble : MonoBehaviour
     {
         if (other.gameObject.tag == "interactableObject")
         {
-            Debug.Log("entered interactable object");
             EnterInteraction.Raise(this, other.gameObject.GetComponent<InteractableObject>());
         }
         if (other.gameObject.tag == "LevelTrigger")
