@@ -14,7 +14,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
     [SerializeField] GameEvent TriggerInteraction;
     [SerializeField] GameEvent MannaChanged;
     [SerializeField] GameObject pointer;
-    public int playerManna = 6;
+    public int playerManna;
+    public int maxManna = 6;
 
     #region Interface
 
@@ -33,6 +34,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         _col = GetComponent<CapsuleCollider2D>();
 
         _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
+        playerManna = maxManna;
     }
 
     private void Update()
@@ -387,6 +389,13 @@ public class PlayerController : MonoBehaviour, IPlayerController
             //Debug.Log(currentFireState);
         }
 
+    }
+
+    public void OnMannaRestored(Component sender, object data)
+    {
+        playerManna = maxManna;
+        MannaChanged.Raise(this, playerManna);
+        //Debug.Log("manna restored");
     }
 
     private void ApplyMovement() => _rb.velocity = _frameVelocity;
