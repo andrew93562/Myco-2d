@@ -73,6 +73,7 @@
     <Compile Include="Assets\Scripts\ScriptableStats.cs" />
     <Compile Include="Assets\Scripts\Crosshair.cs" />
     <Compile Include="Assets\Scripts\InteractionBubble.cs" />
+    <Compile Include="Assets\Scripts\Door.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

@@ -112,6 +112,20 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
         if (_frameInput.MouseUp)
         {
+            _frameMouseUp = _time;
+            pointer.SetActive(false);
+            //Debug.Log(Mathf.Ceil((_time - _frameMouseClicked)/_stats.ProjectileHoldTime));
+            _projectileLevel = (int)Mathf.Min(Mathf.Ceil((_time - _frameMouseClicked) / _stats.ProjectileHoldTime), playerManna);
+            //Debug.Log(_projectileLevel + " projectile level");
+            _frameMouseClicked = 0;
+            if (_projectileLevel > 0)
+            {
+                _projectileToConsume = true;
+                //playerManna -= _projectileLevel;
+            }
+            
+
+            /*
             pointer.SetActive(false);
             if (_time - _frameMouseClicked < _stats.ProjectileHoldTime)
             {
@@ -120,7 +134,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
                     _projectileToConsume = true;
                     _projectileLevel = 1;
                     playerManna -= 1;
-                    Debug.Log("lvl 1 projectile fired");
+                    //Debug.Log("lvl 1 projectile fired");
                 }
                 else
                 {
@@ -179,6 +193,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
             _frameMouseUp = _time;
             MannaChanged.Raise(this, playerManna);
             //Debug.Log(_projectileToConsume);
+            */
         }
     }
 
@@ -327,7 +342,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
                 float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                 Instantiate(projectilePrefab, transform.position + new Vector3(direction.x, direction.y, 1), Quaternion.identity);
-                // have an action here that calls the projectile into existence
+                playerManna -= _projectileLevel;
+                MannaChanged.Raise(this, playerManna);
                 return;
             case FireState.inUI:
                 TriggerInteraction.Raise(this, null);
