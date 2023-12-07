@@ -407,6 +407,21 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     }
 
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "MovingPlatform")
+        {
+            transform.parent = collision.transform;
+        }
+    }
+    void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("MovingPlatform"))
+        {
+            transform.parent = null;
+        }
+    }
+
     public void OnMannaRestored(Component sender, object data)
     {
         playerManna = maxManna;
