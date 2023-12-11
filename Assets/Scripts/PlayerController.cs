@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -13,9 +14,13 @@ public class PlayerController : MonoBehaviour, IPlayerController
     public GameObject projectilePrefab;
     [SerializeField] GameEvent TriggerInteraction;
     [SerializeField] GameEvent MannaChanged;
-    [SerializeField] GameObject pointer;
+    [SerializeField] GameEvent ProjectileCharging;
+    //[SerializeField] GameObject pointer;
     public int playerManna;
     public int maxManna = 6;
+    private GameManager gameManager;
+
+    //public static PlayerController PlayerInstance;
 
     #region Interface
 
@@ -28,6 +33,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private float _time;
     private bool _slowGravity = false;
 
+
+
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
@@ -35,6 +42,13 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
         _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
         playerManna = maxManna;
+        gameManager = GameObject.FindObjectOfType<GameManager>();
+        
+    }
+
+    private void Start()
+    {
+        transform.position = gameManager.playerSpawnPosition;
     }
 
     private void Update()
@@ -53,7 +67,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     private void GatherInput()
     {
-
         _frameInput = new FrameInput
         {
             JumpDown = Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.C),
@@ -93,7 +106,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
         if (_frameInput.MouseDown && CanUseProjectile)
         {
             _frameMouseClicked = _time;
-            pointer.SetActive(true);
+            chargeCoroutine = StartCoroutine(ChargeCoroutine());
+            //pointer.SetActive(true);
             //Debug.Log(playerManna);
         }
         if (_frameInput.MouseHeld && _frameMouseClicked == 0 && CanUseProjectile)
@@ -112,8 +126,13 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
         if (_frameInput.MouseUp)
         {
+            if (chargeCoroutine != null)
+            {
+                StopCoroutine(chargeCoroutine);
+            }
+            StartCoroutine(EndChargeCoroutine());
             _frameMouseUp = _time;
-            pointer.SetActive(false);
+            //pointer.SetActive(false);
             //Debug.Log(Mathf.Ceil((_time - _frameMouseClicked)/_stats.ProjectileHoldTime));
             _projectileLevel = (int)Mathf.Min(Mathf.Ceil((_time - _frameMouseClicked) / _stats.ProjectileHoldTime), playerManna);
             //Debug.Log(_projectileLevel + " projectile level");
@@ -123,8 +142,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
                 _projectileToConsume = true;
                 //playerManna -= _projectileLevel;
             }
-            
-
             /*
             pointer.SetActive(false);
             if (_time - _frameMouseClicked < _stats.ProjectileHoldTime)
@@ -195,6 +212,24 @@ public class PlayerController : MonoBehaviour, IPlayerController
             //Debug.Log(_projectileToConsume);
             */
         }
+    }
+
+    IEnumerator ChargeCoroutine()
+    {
+        _projectileLevel = 1;
+        ProjectileCharging.Raise(this, 1);
+        yield return new WaitForSeconds(_stats.ProjectileHoldTime);
+        ProjectileCharging.Raise(this, 2);
+        yield return new WaitForSeconds(_stats.ProjectileHoldTime);
+        ProjectileCharging.Raise(this, 3);
+        //yield return new WaitForSeconds(_stats.ProjectileHoldTime);
+        //ProjectileCharging.Raise(this, 4);
+    }
+    IEnumerator EndChargeCoroutine()
+    {
+        ProjectileCharging.Raise(this, 0);
+        yield return new WaitForSeconds(_stats.ProjectileCooldown);
+        ProjectileCharging.Raise(this, 4);
     }
 
     private void FixedUpdate()
@@ -297,6 +332,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     #region Projectile
 
     private float _frameMouseClicked;
+    private Coroutine chargeCoroutine;
     private float _frameMouseUp;
     private int _projectileLevel;
     private bool _projectileToConsume;
