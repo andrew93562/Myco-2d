@@ -8,24 +8,31 @@ public class InteractionBubble : MonoBehaviour
     public GameEvent ExitInteraction;
     public GameEvent ChangeLevel;
     public GameEvent MannaRestored;
+    public GameEvent UpdateSpawn;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.tag == "interactableObject")
+        if (other.gameObject.CompareTag("interactableObject"))
         {
             EnterInteraction.Raise(this, other.gameObject.GetComponent<InteractableObject>());
         }
-        if (other.gameObject.tag == "LevelTrigger")
+        /*
+        if (other.gameObject.CompareTag("LevelTrigger"))
         {
             ChangeLevel.Raise(this, other.gameObject.GetComponent<LevelTrigger>());
         }
-        if (other.gameObject.tag == "mannaStation")
+        */
+        if (other.gameObject.CompareTag("mannaStation"))
         {
             bool mannaRestored = other.gameObject.GetComponent<MannaStation>().StationTouched();
             if (mannaRestored)
             {
                 MannaRestored.Raise(this, null);
             }
+        }
+        if (other.gameObject.CompareTag("Respawn"))
+        {
+            UpdateSpawn.Raise(this, other.gameObject.transform.position);
         }
     }
     private void OnTriggerExit2D(Collider2D other)

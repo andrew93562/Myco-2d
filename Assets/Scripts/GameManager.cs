@@ -5,12 +5,34 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] PlayerController player;
+    public Vector3 playerSpawnPosition;
+    public static GameManager GM;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        MakeThisTheOnlyGameManager();
+        playerSpawnPosition = new Vector3(0, 0, -1);
+    }
 
+    private void Start()
+    {
+        
+    }
+
+    void MakeThisTheOnlyGameManager()
+    {
+        if (GM == null)
+        {
+            DontDestroyOnLoad(gameObject);
+            GM = this;
+        }
+        else
+        {
+            if (GM != this)
+            {
+                Destroy(gameObject);
+            }
+        }
     }
 
     // Update is called once per frame
@@ -19,13 +41,13 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public void OnUpdateSpawn(Component sender, object data)
+    {
+        playerSpawnPosition = (Vector3)data;
+    }
+
     public void OnTouchedDeath(Component sender, object data)
     {
-        Rigidbody2D playerRB = player.GetComponent<Rigidbody2D>();
-
-        if (playerRB.velocity.magnitude < 50)
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

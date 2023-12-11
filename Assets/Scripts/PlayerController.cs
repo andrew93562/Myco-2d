@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -13,9 +14,13 @@ public class PlayerController : MonoBehaviour, IPlayerController
     public GameObject projectilePrefab;
     [SerializeField] GameEvent TriggerInteraction;
     [SerializeField] GameEvent MannaChanged;
-    [SerializeField] GameObject pointer;
+    [SerializeField] GameEvent ProjectileCharging;
+    //[SerializeField] GameObject pointer;
     public int playerManna;
     public int maxManna = 6;
+    private GameManager gameManager;
+
+    //public static PlayerController PlayerInstance;
 
     #region Interface
 
@@ -28,6 +33,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private float _time;
     private bool _slowGravity = false;
 
+
+
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
@@ -35,6 +42,13 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
         _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
         playerManna = maxManna;
+        gameManager = GameObject.FindObjectOfType<GameManager>();
+        
+    }
+
+    private void Start()
+    {
+        transform.position = gameManager.playerSpawnPosition;
     }
 
     private void Update()
@@ -53,7 +67,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     private void GatherInput()
     {
-
+        Debug.Log(_projectileLevel + " level");
+        Debug.Log(_projectileToConsume + " to consume");
         _frameInput = new FrameInput
         {
             JumpDown = Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.C),
@@ -90,18 +105,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
             }
         }
 
-        if (_frameInput.MouseDown && CanUseProjectile)
-        {
-            _frameMouseClicked = _time;
-            pointer.SetActive(true);
-            //Debug.Log(playerManna);
-        }
-        if (_frameInput.MouseHeld && _frameMouseClicked == 0 && CanUseProjectile)
-        {
-            _frameMouseClicked = _time;
-        }
-
-        if (_frameInput.MouseHeld && _time - _frameMouseClicked < _stats.ProjectileHoldTime * 3)
+        if (_frameInput.MouseHeld && _projectileLevel != 0)
         {
             _slowGravity = true;
         }
@@ -110,90 +114,48 @@ public class PlayerController : MonoBehaviour, IPlayerController
             _slowGravity = false;
         }
 
+        if ((_frameInput.MouseDown || _frameInput.MouseHeld) && _projectileLevel == 4)
+        {
+            chargeCoroutine = StartCoroutine(ChargeCoroutine());
+        }
+
         if (_frameInput.MouseUp)
         {
-            _frameMouseUp = _time;
-            pointer.SetActive(false);
-            //Debug.Log(Mathf.Ceil((_time - _frameMouseClicked)/_stats.ProjectileHoldTime));
-            _projectileLevel = (int)Mathf.Min(Mathf.Ceil((_time - _frameMouseClicked) / _stats.ProjectileHoldTime), playerManna);
-            //Debug.Log(_projectileLevel + " projectile level");
-            _frameMouseClicked = 0;
-            if (_projectileLevel > 0)
+            if (chargeCoroutine != null)
             {
-                _projectileToConsume = true;
-                //playerManna -= _projectileLevel;
+                StopCoroutine(chargeCoroutine);
             }
-            
+            _projectileToConsume = _projectileLevel;
+            StartCoroutine(EndChargeCoroutine());
+        }
 
-            /*
-            pointer.SetActive(false);
-            if (_time - _frameMouseClicked < _stats.ProjectileHoldTime)
-            {
-                if (playerManna > 0 && !_grounded)
-                {
-                    _projectileToConsume = true;
-                    _projectileLevel = 1;
-                    playerManna -= 1;
-                    //Debug.Log("lvl 1 projectile fired");
-                }
-                else
-                {
-                    _projectileToConsume = true;
-                    _projectileLevel = 0;
-                }
-            }
-            else if (_time - _frameMouseClicked < _stats.ProjectileHoldTime * 2)
-            {
-                if (playerManna > 1 && !_grounded)
-                {
-                    _projectileToConsume = true;
-                    _projectileLevel = 2;
-                    playerManna -= 2;
-                }
-                else if (playerManna > 0 && !_grounded)
-                {
-                    _projectileToConsume = true;
-                    _projectileLevel = 1;
-                    playerManna -= 1;
-                }
-                else 
-                { 
-                    _projectileToConsume = true;
-                    _projectileLevel = 0;
-                }
-            }
-            else if (_time - _frameMouseClicked < _stats.ProjectileHoldTime * 3)
-            {
-                if (playerManna > 2 && !_grounded)
-                {
-                    _projectileToConsume = true;
-                    _projectileLevel = 3;
-                    playerManna -= 3;
-                }
+    }
 
-                else if (playerManna > 1 && !_grounded)
-                {
-                    _projectileToConsume = true;
-                    _projectileLevel = 2;
-                    playerManna -= 2;
-                }
-                else if (playerManna > 0 && !_grounded)
-                {
-                    _projectileToConsume = true;
-                    _projectileLevel = 1;
-                    playerManna -= 1;
-                }
-                else
-                {
-                    _projectileToConsume = true;
-                    _projectileLevel = 0;
-                }
-            }
-            _frameMouseClicked = 0;
-            _frameMouseUp = _time;
-            MannaChanged.Raise(this, playerManna);
-            //Debug.Log(_projectileToConsume);
-            */
+
+
+    IEnumerator ChargeCoroutine()
+    {
+        _projectileLevel = Mathf.Min(1, playerManna);
+        ProjectileCharging.Raise(this, _projectileLevel);
+        yield return new WaitForSeconds(_stats.ProjectileHoldTime);
+
+        _projectileLevel = Mathf.Min(2, playerManna);
+        ProjectileCharging.Raise(this, _projectileLevel);
+        yield return new WaitForSeconds(_stats.ProjectileHoldTime);
+
+        _projectileLevel = Mathf.Min(3, playerManna);
+        ProjectileCharging.Raise(this, _projectileLevel);
+        //yield return new WaitForSeconds(_stats.ProjectileHoldTime);
+    }
+    IEnumerator EndChargeCoroutine()
+    {
+        _projectileLevel = 0;
+        ProjectileCharging.Raise(this, _projectileLevel);
+        yield return new WaitForSeconds(_stats.ProjectileCooldown);
+        _projectileLevel = 4;
+        if (playerManna > 0)
+        {
+            ProjectileCharging.Raise(this, _projectileLevel);
         }
     }
 
@@ -297,9 +259,10 @@ public class PlayerController : MonoBehaviour, IPlayerController
     #region Projectile
 
     private float _frameMouseClicked;
+    private Coroutine chargeCoroutine;
     private float _frameMouseUp;
-    private int _projectileLevel;
-    private bool _projectileToConsume;
+    private int _projectileLevel = 4;
+    private int _projectileToConsume;
     private bool CanUseProjectile;
     private float _frameLastFired;
 
@@ -307,18 +270,23 @@ public class PlayerController : MonoBehaviour, IPlayerController
     {
         CanUseProjectile = _time >= _stats.ProjectileCooldown + _frameLastFired;
         
-        if (!_projectileToConsume)
+        if (_projectileToConsume == 0)
         {
             return;
         }
+        else
+        {
+            FireProjectile();
+        }
         
-
+        /*
         if (CanUseProjectile)
         {
             FireProjectile();
         }
+        */
         //Debug.Log(currentFireState);
-        _projectileToConsume = false;
+        _projectileToConsume = 0;
 
     }
 
@@ -334,7 +302,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
                 if (!_grounded)
                 {
-                    _frameVelocity += -direction * _stats.ProjectileVelocity * _projectileLevel;
+                    _frameVelocity += -direction * _stats.ProjectileVelocity * _projectileToConsume;
                 }
 
                 _frameLastFired = _time;
@@ -342,7 +310,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
                 float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                 Instantiate(projectilePrefab, transform.position + new Vector3(direction.x, direction.y, 1), Quaternion.identity);
-                playerManna -= _projectileLevel;
+                playerManna -= _projectileToConsume;
                 MannaChanged.Raise(this, playerManna);
                 return;
             case FireState.inUI:
@@ -426,6 +394,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     {
         playerManna = maxManna;
         MannaChanged.Raise(this, playerManna);
+        ProjectileCharging.Raise(this, 4);
         //Debug.Log("manna restored");
     }
 
