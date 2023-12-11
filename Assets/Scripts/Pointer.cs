@@ -29,9 +29,9 @@ public class Pointer : MonoBehaviour
 
     public void OnProjectileCharging(Component sender, object data)
     {
-        Debug.Log("changing sprite");
+        //Debug.Log("changing sprite");
         int projectileLevel = (int)data % sprites.Length;
-        Debug.Log(sprites[projectileLevel].name);
+        //Debug.Log(sprites[projectileLevel].name);
         activeSpriteRenderer.sprite = sprites[projectileLevel];
     }
 }
