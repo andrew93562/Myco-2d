@@ -1496,8 +1496,8 @@ GameObject:
   - component: {fileID: 930077150}
   - component: {fileID: 930077151}
   - component: {fileID: 930077152}
-  - component: {fileID: 930077153}
   - component: {fileID: 930077154}
+  - component: {fileID: 930077155}
   m_Layer: 0
   m_Name: Interaction Bubble
   m_TagString: Untagged
@@ -1589,22 +1589,6 @@ MonoBehaviour:
   ChangeLevel: {fileID: 11400000, guid: 81188ccb988e8eb45be96b9185d3f211, type: 2}
   MannaRestored: {fileID: 11400000, guid: 9cb796b26775e7a428013dbdfdcd2da6, type: 2}
   UpdateSpawn: {fileID: 11400000, guid: 5f27378bc8489c74ea94f96a6578599b, type: 2}
---- !u!58 &930077153
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 930077149}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.5
 --- !u!50 &930077154
 Rigidbody2D:
   serializedVersion: 4
@@ -1613,19 +1597,35 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 930077149}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 0
+  m_GravityScale: 1
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!58 &930077155
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 930077149}
+  m_Enabled: 0
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.5
 --- !u!4 &972312691 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3288866145081546335, guid: d7e6b898b7ded3c4793a008592757947, type: 3}
