@@ -77,8 +77,20 @@ public class PlayerController : MonoBehaviour, IPlayerController
             Move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")),
             MouseDown = Input.GetMouseButtonDown(0),
             MouseHeld = Input.GetMouseButton(0),
-            MouseUp = Input.GetMouseButtonUp(0)
+            MouseUp = Input.GetMouseButtonUp(0),
+            RightMouseDown = Input.GetMouseButtonDown(1),
+            Up = Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow),
+            Down = Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow),
         };
+
+        if (_frameInput.Down)
+        {
+            Debug.Log("Down pressed");
+        }
+        if (_frameInput.Up)
+        {
+            Debug.Log("Up pressed");
+        }
 
         if (_stats.SnapInput)
         {
@@ -89,7 +101,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         if (_frameInput.JumpDown)
         {
             _timeJumpWasPressed = _time;
-            Debug.Log("jump pressed");
+            //Debug.Log("jump pressed");
         }
         if (_frameInput.JumpUp)
         {
@@ -118,6 +130,16 @@ public class PlayerController : MonoBehaviour, IPlayerController
         if ((_frameInput.MouseDown || _frameInput.MouseHeld) && _projectileLevel == 4)
         {
             chargeCoroutine = StartCoroutine(ChargeCoroutine());
+        }
+
+        if (_frameInput.MouseHeld && _frameInput.RightMouseDown)
+        {
+            if (chargeCoroutine != null)
+            {
+                StopCoroutine(chargeCoroutine);
+            }
+            _projectileLevel = 0;
+            ProjectileCharging.Raise(this, _projectileLevel);
         }
 
         if (_frameInput.MouseUp)
@@ -189,8 +211,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
         //Debug.Log(leftWallHit);
         // Hit a Ceiling or Wall
         if (ceilingHit) _frameVelocity.y = Mathf.Min(0, _frameVelocity.y);
-        //if (leftWallHit || rightWallHit) _frameVelocity.x = Mathf.Sign(_frameVelocity.x) * Mathf.Min(0, Mathf.Abs(_frameVelocity.x));
-        if (leftWallHit || rightWallHit) _frameVelocity.x = 0;
+        if (leftWallHit || rightWallHit) _frameVelocity.x = Mathf.Sign(_frameVelocity.x) * Mathf.Min(0, Mathf.Abs(_frameVelocity.x));
+        //if (leftWallHit || rightWallHit) _frameVelocity.x = 0;
 
         // Landed on the Ground
         if (!_grounded && groundHit)
@@ -418,6 +440,9 @@ public struct FrameInput
     public bool MouseDown;
     public bool MouseHeld;
     public bool MouseUp;
+    public bool RightMouseDown;
+    public bool Up;
+    public bool Down;
 }
 
 public interface IPlayerController

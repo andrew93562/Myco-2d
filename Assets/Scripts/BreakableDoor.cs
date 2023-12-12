@@ -16,9 +16,9 @@ public class BreakableDoor : MonoBehaviour
         
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        Rigidbody2D otherRB = collision.GetComponent<Rigidbody2D>();
+        Rigidbody2D otherRB = collision.gameObject.GetComponent<Rigidbody2D>();
         Debug.Log(otherRB.velocity.magnitude);
         Collider2D[] _myColliders = GetComponents<Collider2D>();
 

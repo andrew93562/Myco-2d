@@ -6,12 +6,7 @@ using UnityEngine;
 
 public class InteractableObject : MonoBehaviour
 {
-    //[SerializeField] TextAsset dialogueAsset;
     [SerializeField] Sprite[] sprites;
-    //[SerializeField] Sprite defaultPortrait = null;
-    //[SerializeField] Sprite secondPortrait = null;
-    //[SerializeField] Sprite thirdPortrait = null;
-    //private List<Sprite> imageList;
     [SerializeField] TextAsset[] dialogueAssets;
     [SerializeField] public string objectName;
     
@@ -25,10 +20,6 @@ public class InteractableObject : MonoBehaviour
 
     public void Start()
     {
-        //imageList = new List<Sprite>();
-        //imageList.Add(defaultPortrait);
-        //imageList.Add(secondPortrait);
-        //imageList.Add(thirdPortrait);
     }
 
     public string ReturnLinesOfText(int textToReturn)

@@ -30,7 +30,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3288866145081546332}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.2680101, y: -5.7927504, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 3, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -104,6 +104,7 @@ MonoBehaviour:
   ListensToSwitchID: 0
   points: []
   speed: 5
+  pointIndex: 0
 --- !u!114 &-419229996663542638
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -48,16 +48,7 @@ public class DialogueManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //Debug.Log(this);
-        //textDisplayBox = dialogueBox.GetComponent<TextMeshProUGUI>();
         characterPortraitSlot = characterPortraitObject.GetComponent<Image>();
-        //npcPortraitSlot = npcPortraitObject.GetComponent<Image>();
-        //consider building the list below only when entering an interaction, and then destroying it upon exiting the interaction
-        // or, since they're already in memory, just do an if-statement in the text parsing method. this way, you can just have the 
-        // portrait cues in the text file be read as a string, and have it match up with a string
-        //characterPortraits.Add(defaultCharacterPortrait);
-        //characterPortraits.Add(secondCharacterPortrait);
-        //characterPortraits.Add(thirdCharacterPortrait);
     }
 
     // Update is called once per frame
@@ -69,7 +60,6 @@ public class DialogueManager : MonoBehaviour
     public void OnEnterInteraction(Component sender, object data)
     {
         interactableObject = (InteractableObject)data;
-        //Debug.Log
         index = 0;
         SwitchState(InteractionState.listening);
     }
