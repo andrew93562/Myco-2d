@@ -38,6 +38,9 @@ public class ScriptableStats : ScriptableObject
     [Tooltip("The detection distance for grounding and roof detection"), Range(0f, 0.5f)]
     public float GrounderDistance = 0.05f;
 
+    [Tooltip("The detection distance for wall detection"), Range(0f, 0.5f)]
+    public float ElbowDistance = 0.05f;
+
     [Header("JUMP")]
     [Tooltip("The immediate velocity applied when jumping")]
     public float JumpPower = 36;

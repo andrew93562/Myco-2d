@@ -67,8 +67,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     private void GatherInput()
     {
-        Debug.Log(_projectileLevel + " level");
-        Debug.Log(_projectileToConsume + " to consume");
+        //Debug.Log(_projectileLevel + " level");
+        //Debug.Log(_projectileToConsume + " to consume");
         _frameInput = new FrameInput
         {
             JumpDown = Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.C),
@@ -89,6 +89,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         if (_frameInput.JumpDown)
         {
             _timeJumpWasPressed = _time;
+            Debug.Log("jump pressed");
         }
         if (_frameInput.JumpUp)
         {
@@ -183,13 +184,13 @@ public class PlayerController : MonoBehaviour, IPlayerController
         // Ground and Ceiling
         bool groundHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.down, _stats.GrounderDistance, ~_stats.PlayerLayer);
         bool ceilingHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.up, _stats.GrounderDistance, ~_stats.PlayerLayer);
-        bool leftWallHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.left, _stats.GrounderDistance, ~_stats.PlayerLayer);
-        bool rightWallHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.right, _stats.GrounderDistance, ~_stats.PlayerLayer);
-
-        // Hit a Ceiling
+        bool leftWallHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.left, _stats.ElbowDistance, ~_stats.PlayerLayer);
+        bool rightWallHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.right, _stats.ElbowDistance, ~_stats.PlayerLayer);
+        //Debug.Log(leftWallHit);
+        // Hit a Ceiling or Wall
         if (ceilingHit) _frameVelocity.y = Mathf.Min(0, _frameVelocity.y);
-        if (leftWallHit || rightWallHit) _frameVelocity.x = Mathf.Sign(_frameVelocity.x) * Mathf.Min(0, Mathf.Abs(_frameVelocity.x));
-
+        //if (leftWallHit || rightWallHit) _frameVelocity.x = Mathf.Sign(_frameVelocity.x) * Mathf.Min(0, Mathf.Abs(_frameVelocity.x));
+        if (leftWallHit || rightWallHit) _frameVelocity.x = 0;
 
         // Landed on the Ground
         if (!_grounded && groundHit)
