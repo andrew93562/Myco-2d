@@ -85,11 +85,11 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
         if (_frameInput.Down)
         {
-            Debug.Log("Down pressed");
+            //Debug.Log("Down pressed");
         }
         if (_frameInput.Up)
         {
-            Debug.Log("Up pressed");
+            //Debug.Log("Up pressed");
         }
 
         if (_stats.SnapInput)
@@ -149,7 +149,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
                 StopCoroutine(chargeCoroutine);
             }
             _projectileToConsume = _projectileLevel;
-            StartCoroutine(EndChargeCoroutine());
+            endChargeCoroutine = StartCoroutine(EndChargeCoroutine());
         }
 
     }
@@ -206,12 +206,12 @@ public class PlayerController : MonoBehaviour, IPlayerController
         // Ground and Ceiling
         bool groundHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.down, _stats.GrounderDistance, ~_stats.PlayerLayer);
         bool ceilingHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.up, _stats.GrounderDistance, ~_stats.PlayerLayer);
-        bool leftWallHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.left, _stats.ElbowDistance, ~_stats.PlayerLayer);
-        bool rightWallHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.right, _stats.ElbowDistance, ~_stats.PlayerLayer);
+        //bool leftWallHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.left, _stats.ElbowDistance, ~_stats.PlayerLayer);
+        //bool rightWallHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.right, _stats.ElbowDistance, ~_stats.PlayerLayer);
         //Debug.Log(leftWallHit);
         // Hit a Ceiling or Wall
         if (ceilingHit) _frameVelocity.y = Mathf.Min(0, _frameVelocity.y);
-        if (leftWallHit || rightWallHit) _frameVelocity.x = Mathf.Sign(_frameVelocity.x) * Mathf.Min(0, Mathf.Abs(_frameVelocity.x));
+        //if (leftWallHit || rightWallHit) _frameVelocity.x = Mathf.Sign(_frameVelocity.x) * Mathf.Min(0, Mathf.Abs(_frameVelocity.x));
         //if (leftWallHit || rightWallHit) _frameVelocity.x = 0;
 
         // Landed on the Ground
@@ -283,6 +283,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     private float _frameMouseClicked;
     private Coroutine chargeCoroutine;
+    private Coroutine endChargeCoroutine;
     private float _frameMouseUp;
     private int _projectileLevel = 4;
     private int _projectileToConsume;
@@ -337,7 +338,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
                 MannaChanged.Raise(this, playerManna);
                 return;
             case FireState.inUI:
-                TriggerInteraction.Raise(this, null);
+                //TriggerInteraction.Raise(this, null);
                 return;
         }
     }
@@ -397,10 +398,10 @@ public class PlayerController : MonoBehaviour, IPlayerController
         }
 
     }
-
+    
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "MovingPlatform")
+        if (collision.CompareTag("MovingPlatform"))
         {
             transform.parent = collision.transform;
         }
@@ -412,12 +413,17 @@ public class PlayerController : MonoBehaviour, IPlayerController
             transform.parent = null;
         }
     }
-
+    
     public void OnMannaRestored(Component sender, object data)
     {
-        playerManna = maxManna;
-        MannaChanged.Raise(this, playerManna);
-        ProjectileCharging.Raise(this, 4);
+        //Debug.Log(sender.GetComponent<MannaStation>().chargesLeft);
+        if (sender.GetComponent<MannaStation>().chargesLeft >= 0)
+        {
+            Debug.Log("manna restored");
+            playerManna = maxManna;
+            MannaChanged.Raise(this, playerManna);
+            ProjectileCharging.Raise(this, 4);
+        }
         //Debug.Log("manna restored");
     }
 

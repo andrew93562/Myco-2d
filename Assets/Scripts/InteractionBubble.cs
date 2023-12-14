@@ -12,16 +12,18 @@ public class InteractionBubble : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        /*
         if (other.gameObject.CompareTag("interactableObject"))
         {
-            EnterInteraction.Raise(this, other.gameObject.GetComponent<InteractableObject>());
+            EnterInteraction.Raise(this, other.gameObject.GetComponent<DialogueObject>());
         }
+        */
         /*
         if (other.gameObject.CompareTag("LevelTrigger"))
         {
             ChangeLevel.Raise(this, other.gameObject.GetComponent<LevelTrigger>());
         }
-        */
+        
         if (other.gameObject.CompareTag("mannaStation"))
         {
             bool mannaRestored = other.gameObject.GetComponent<MannaStation>().StationTouched();
@@ -30,11 +32,15 @@ public class InteractionBubble : MonoBehaviour
                 MannaRestored.Raise(this, null);
             }
         }
+        */
+        /*
         if (other.gameObject.CompareTag("Respawn"))
         {
             UpdateSpawn.Raise(this, other.gameObject.transform.position);
         }
+        */
     }
+    /*
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.gameObject.tag == "interactableObject")
@@ -42,4 +48,5 @@ public class InteractionBubble : MonoBehaviour
             ExitInteraction.Raise(this, null);
         }
     }
+    */
 }

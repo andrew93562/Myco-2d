@@ -10,9 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 2050704488845505129}
   - component: {fileID: 2050704488845505130}
-  - component: {fileID: 2050704488845505131}
   - component: {fileID: 2050704488845505172}
   - component: {fileID: 2050704488845505173}
+  - component: {fileID: 4056720169867982205}
+  - component: {fileID: 6429088646795540515}
   m_Layer: 0
   m_Name: Interaction Bubble
   m_TagString: mannaStation
@@ -28,8 +29,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2050704488845505128}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2, z: 0}
-  m_LocalScale: {x: 2, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: -0.487, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2050704490307135733}
@@ -87,27 +88,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!50 &2050704488845505131
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2050704488845505128}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!61 &2050704488845505172
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -118,7 +98,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -149,6 +129,50 @@ MonoBehaviour:
   chargesLeft: 1
   emptySprite: {fileID: 21300000, guid: 4ec302c062ff7c3458d4d1329b6c9ccd, type: 3}
   mannaStationSpriteRenderer: {fileID: 2050704490307135732}
+--- !u!114 &4056720169867982205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2050704488845505128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc59dd50fe00b9f429556e58c447d9b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  needsInput: 0
+  TriggerInteraction: {fileID: 0}
+  EnterInteraction: {fileID: 11400000, guid: 9cb796b26775e7a428013dbdfdcd2da6, type: 2}
+  ExitInteraction: {fileID: 0}
+--- !u!114 &6429088646795540515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2050704488845505128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d1ef231dbadb7e499d0271c3bb19db9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameEvent: {fileID: 11400000, guid: 9cb796b26775e7a428013dbdfdcd2da6, type: 2}
+  response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2050704488845505173}
+        m_TargetAssemblyTypeName: MannaStation, Assembly-CSharp
+        m_MethodName: OnMannaRestored
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2050704490307135691
 GameObject:
   m_ObjectHideFlags: 0
