@@ -25,6 +25,7 @@ public class Crosshair : MonoBehaviour
     public void OnProjectileCharging(Component sender, object data)
     {
         int projectileLevel = (int)data % sprites.Length;
+        //Debug.Log(projectileLevel + " on crosshair");
         activeSpriteRenderer.sprite = sprites[projectileLevel];
     }
 }

@@ -1,33 +1,53 @@
-using Microsoft.Unity.VisualStudio.Editor;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public class InteractableObject : MonoBehaviour
 {
-    [SerializeField] Sprite[] sprites;
-    [SerializeField] TextAsset[] dialogueAssets;
-    [SerializeField] public string objectName;
-    
-    public enum ObjectType
+    private bool isInteracting;
+    public bool needsInput;
+    [SerializeField] GameEvent TriggerInteraction;
+    [SerializeField] GameEvent EnterInteraction;
+    [SerializeField] GameEvent ExitInteraction;
+
+
+    void Update()
     {
-        Person,
-        Book
+        if (needsInput)
+        {
+            if (isInteracting && Input.GetKeyDown(KeyCode.W))
+            {
+                TriggerInteraction.Raise(this, null);
+            }
+        }
+    }
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            if (needsInput)
+            {
+                isInteracting = true;
+            }
+            if (EnterInteraction != null)
+            {
+                EnterInteraction.Raise(this, null);
+            }
+        }
+    }
+    void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            if (needsInput)
+            {
+                isInteracting = false;
+            }
+            if (ExitInteraction != null)
+            {
+                ExitInteraction.Raise(this, null);
+            }
+        }
     }
 
-    public ObjectType objectType;
-
-    public void Start()
-    {
-    }
-
-    public string ReturnLinesOfText(int textToReturn)
-    {
-        return dialogueAssets[textToReturn].ToString();
-    }
-    public Sprite[] ReturnSpriteList()
-    {
-        return sprites;
-    }
 }

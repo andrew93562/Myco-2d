@@ -31,7 +31,7 @@ public class Pointer : MonoBehaviour
     {
         //Debug.Log("changing sprite");
         int projectileLevel = (int)data % sprites.Length;
-        //Debug.Log(sprites[projectileLevel].name);
+        //Debug.Log(projectileLevel + " on pointer");
         activeSpriteRenderer.sprite = sprites[projectileLevel];
     }
 }
