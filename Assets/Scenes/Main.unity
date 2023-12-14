@@ -274,6 +274,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 792595271}
     m_Modifications:
+    - target: {fileID: 2050704488845505173, guid: b0bf0fb83826c514a8fd3e7fbf549e7f, type: 3}
+      propertyPath: chargesLeft
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2050704490307135691, guid: b0bf0fb83826c514a8fd3e7fbf549e7f, type: 3}
       propertyPath: m_Name
       value: Manna Station
@@ -284,11 +288,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2050704490307135733, guid: b0bf0fb83826c514a8fd3e7fbf549e7f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2
+      value: 9.3
       objectReference: {fileID: 0}
     - target: {fileID: 2050704490307135733, guid: b0bf0fb83826c514a8fd3e7fbf549e7f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6
+      value: -6
       objectReference: {fileID: 0}
     - target: {fileID: 2050704490307135733, guid: b0bf0fb83826c514a8fd3e7fbf549e7f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1870,7 +1874,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1130581296}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.82, y: 5.07, z: -1}
+  m_LocalPosition: {x: 4.82, y: 5.97, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3079,7 +3083,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1965765657}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.82, y: 5.07, z: -1}
+  m_LocalPosition: {x: 4.82, y: 5.97, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -21841,7 +21845,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2052318446}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.82, y: 5.07, z: -1}
+  m_LocalPosition: {x: 4.82, y: 5.97, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
