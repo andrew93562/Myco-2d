@@ -39,7 +39,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
     {
         _rb = GetComponent<Rigidbody2D>();
         _col = GetComponent<CapsuleCollider2D>();
-
         _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
         playerManna = maxManna;
         gameManager = GameObject.FindObjectOfType<GameManager>();
@@ -54,6 +53,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private void Update()
     {
         _time += Time.deltaTime;
+        Debug.Log(_grounded);
         //revert to 0 on scene change
         GatherInput();
     }
@@ -101,11 +101,13 @@ public class PlayerController : MonoBehaviour, IPlayerController
         if (_frameInput.JumpDown)
         {
             _timeJumpWasPressed = _time;
+            Debug.Log(_grounded);
             //Debug.Log("jump pressed");
         }
         if (_frameInput.JumpUp)
         {
-            if (_time - _timeJumpWasPressed < _stats.JumpSquat && _grounded)
+            //if (_time - _timeJumpWasPressed < _stats.JumpSquat && _grounded)
+            if (_time - _timeJumpWasPressed < _stats.JumpSquat)
             {
                 _shortHopToConsume = true;
             }
@@ -168,7 +170,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
         _projectileLevel = Mathf.Min(3, playerManna);
         ProjectileCharging.Raise(this, _projectileLevel);
-        //yield return new WaitForSeconds(_stats.ProjectileHoldTime);
     }
     IEnumerator EndChargeCoroutine()
     {
@@ -206,13 +207,11 @@ public class PlayerController : MonoBehaviour, IPlayerController
         // Ground and Ceiling
         bool groundHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.down, _stats.GrounderDistance, ~_stats.PlayerLayer);
         bool ceilingHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.up, _stats.GrounderDistance, ~_stats.PlayerLayer);
-        //bool leftWallHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.left, _stats.ElbowDistance, ~_stats.PlayerLayer);
-        //bool rightWallHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.right, _stats.ElbowDistance, ~_stats.PlayerLayer);
-        //Debug.Log(leftWallHit);
-        // Hit a Ceiling or Wall
+        bool leftWallHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.left, _stats.ElbowDistance, ~_stats.PlayerLayer);
+        bool rightWallHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.right, _stats.ElbowDistance, ~_stats.PlayerLayer);
+
         if (ceilingHit) _frameVelocity.y = Mathf.Min(0, _frameVelocity.y);
-        //if (leftWallHit || rightWallHit) _frameVelocity.x = Mathf.Sign(_frameVelocity.x) * Mathf.Min(0, Mathf.Abs(_frameVelocity.x));
-        //if (leftWallHit || rightWallHit) _frameVelocity.x = 0;
+        if (leftWallHit || rightWallHit) _frameVelocity.x = Mathf.Min(0, _frameVelocity.x);
 
         // Landed on the Ground
         if (!_grounded && groundHit)
@@ -333,7 +332,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
 
                 float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-                Instantiate(projectilePrefab, transform.position + new Vector3(direction.x, direction.y, 1), Quaternion.identity);
+                Instantiate(projectilePrefab, transform.position + 1.5f * new Vector3(direction.x, direction.y, 1), Quaternion.identity);
                 playerManna -= _projectileToConsume;
                 MannaChanged.Raise(this, playerManna);
                 return;
@@ -419,7 +418,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         //Debug.Log(sender.GetComponent<MannaStation>().chargesLeft);
         if (sender.GetComponent<MannaStation>().chargesLeft >= 0)
         {
-            Debug.Log("manna restored");
+            //Debug.Log("manna restored");
             playerManna = maxManna;
             MannaChanged.Raise(this, playerManna);
             ProjectileCharging.Raise(this, 4);
