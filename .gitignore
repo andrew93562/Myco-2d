@@ -377,3 +377,8 @@ UserSettings/Layouts/default-2021.dwlt
 Assembly-CSharp.csproj
 Assets/TextMesh Pro/Documentation/TextMesh Pro User Guide 2016.pdf
 *.png
+/Assets/TextMesh Pro
+/Assets/TextMesh Pro
+/Assets/TextMesh Pro/Fonts
+Assets/TextMesh Pro/Fonts/LiberationSans - OFL.txt
+*.txt

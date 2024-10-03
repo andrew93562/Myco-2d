@@ -83,7 +83,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &6678856735783081116
@@ -95,11 +95,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6678856735783081104}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b615b01301a059e4b97de013fe39c538, type: 3}
+  m_Script: {fileID: 11500000, guid: 16b3087073f262b4a858e63988972188, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnPoint: {fileID: 0}
-  TouchedDeath: {fileID: 11400000, guid: bbb074750ba45cb4fb40f1a6c2bd8887, type: 2}
+  TouchedDeath: {fileID: 0}
 --- !u!61 &6678856735783081117
 BoxCollider2D:
   m_ObjectHideFlags: 0
