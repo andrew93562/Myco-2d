@@ -24,13 +24,13 @@ public class QuestManager : MonoBehaviour
         
     }
 
-    public int ReturnTextNumber(DialogueObject interactableObject)
+    public int ReturnTextNumber(InteractableObject interactableObject)
     {
-        if (interactableObject.objectType == DialogueObject.ObjectType.Book)
+        if (interactableObject.objectType == InteractableObject.ObjectType.Book)
         {
             return 0;
         }
-        else if (interactableObject.objectType == DialogueObject.ObjectType.Person)
+        else if (interactableObject.objectType == InteractableObject.ObjectType.Person)
         {
             if (interactableObject.objectName == "Jeremiah")
             {

@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
 
     public void OnUpdateSpawn(Component sender, object data)
     {
-        playerSpawnPosition = sender.GetComponent<Transform>().position;
+        playerSpawnPosition = (Vector3)data;
     }
 
     public void OnTouchedDeath(Component sender, object data)

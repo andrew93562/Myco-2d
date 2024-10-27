@@ -4,33 +4,28 @@ using UnityEngine;
 
 public class MannaStation : MonoBehaviour
 {
-    [SerializeField] public int chargesLeft;
+    [SerializeField] int chargesLeft;
     [SerializeField] Sprite emptySprite;
     [SerializeField] SpriteRenderer mannaStationSpriteRenderer;
 
-    public void OnMannaRestored(Component sender, object data)
+    public bool StationTouched()
     {
-        if (sender.GetComponent<MannaStation>() == this)
+        if (chargesLeft <= 0)
+        {
+            if (mannaStationSpriteRenderer.sprite != emptySprite)
+            {
+                mannaStationSpriteRenderer.sprite = emptySprite;
+            }
+            return false;
+        }
+        else
         {
             chargesLeft -= 1;
-            //Debug.Log("manna station touched");
             if (chargesLeft <= 0)
             {
-                if (mannaStationSpriteRenderer.sprite != emptySprite)
-                {
-                    mannaStationSpriteRenderer.sprite = emptySprite;
-                }
-                //chargesLeft -= 1;
+                mannaStationSpriteRenderer.sprite = emptySprite;
             }
-            else
-            {
-                //chargesLeft -= 1;
-                if (chargesLeft <= 0)
-                {
-                    mannaStationSpriteRenderer.sprite = emptySprite;
-                }
-            }
+            return true;
         }
-        
     }
 }

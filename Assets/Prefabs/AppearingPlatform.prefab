@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8823329051258025902}
   - component: {fileID: 8823329051258025900}
   - component: {fileID: 8823329051258025903}
-  - component: {fileID: 8823329051258025898}
   - component: {fileID: 8823329051258025901}
   m_Layer: 0
   m_Name: AppearingPlatform
@@ -84,7 +83,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!61 &8823329051258025903
@@ -113,19 +112,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &8823329051258025898
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8823329051258025937}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e2d9a77ac7372143a7618063d51edd7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ListensToSwitchID: 0
 --- !u!114 &8823329051258025901
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,22 +121,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8823329051258025937}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d1ef231dbadb7e499d0271c3bb19db9, type: 3}
+  m_Script: {fileID: 11500000, guid: 9ddcd657e12f73e4a96e0bd901fe0aa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameEvent: {fileID: 11400000, guid: 410084f61b2782f419c514163ab38b86, type: 2}
-  response:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8823329051258025898}
-        m_TargetAssemblyTypeName: AppearingPlatform, Assembly-CSharp
-        m_MethodName: OnActivate
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+  ListensToSwitchID: 0

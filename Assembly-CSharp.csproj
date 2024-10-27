@@ -59,7 +59,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\PlayerController.cs" />
-    <Compile Include="Assets\Scripts\InteractableObject.cs" />
     <Compile Include="Assets\Scripts\BreakableDoor.cs" />
     <Compile Include="Assets\Scripts\AppearingPlatform.cs" />
     <Compile Include="Assets\Scripts\Projectile.cs" />
@@ -67,7 +66,7 @@
     <Compile Include="Assets\Scripts\MannaDisplay.cs" />
     <Compile Include="Assets\Scripts\MannaStation.cs" />
     <Compile Include="Assets\Scripts\Switch.cs" />
-    <Compile Include="Assets\Scripts\DialogueObject.cs" />
+    <Compile Include="Assets\Scripts\InteractableObject.cs" />
     <Compile Include="Assets\Scripts\PlayerAnimator.cs" />
     <Compile Include="Assets\Scripts\DeathZone.cs" />
     <Compile Include="Assets\Scripts\Door.cs" />

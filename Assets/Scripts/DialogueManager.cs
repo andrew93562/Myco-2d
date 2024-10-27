@@ -32,7 +32,7 @@ public class DialogueManager : MonoBehaviour
     private int textToPass = 0;
 
     private int index = 0;
-    private DialogueObject interactableObject = null;
+    private InteractableObject interactableObject = null;
     //private TextMeshProUGUI textDisplayBox;
 
     private enum InteractionState
@@ -59,7 +59,7 @@ public class DialogueManager : MonoBehaviour
 
     public void OnEnterInteraction(Component sender, object data)
     {
-        interactableObject = sender.GetComponent<DialogueObject>();
+        interactableObject = (InteractableObject)data;
         index = 0;
         SwitchState(InteractionState.listening);
     }
@@ -133,7 +133,7 @@ public class DialogueManager : MonoBehaviour
     /*
     public void DisplayDialogue(Component sender, object data)
     {
-        interactableObject = (DialogueObject)data;
+        interactableObject = (InteractableObject)data;
         List<string> textToDisplay = DialogueParser(interactableObject.ReturnLinesOfText());
         List<Sprite> characterPortraits = interactableObject.ReturnSpriteList();
 
