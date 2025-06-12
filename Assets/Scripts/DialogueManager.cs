@@ -59,9 +59,13 @@ public class DialogueManager : MonoBehaviour
 
     public void OnEnterInteraction(Component sender, object data)
     {
-        interactableObject = sender.GetComponent<DialogueObject>();
-        index = 0;
-        SwitchState(InteractionState.listening);
+        if (sender.CompareTag("interactableObject"))
+        {
+            interactableObject = sender.GetComponent<DialogueObject>();
+            index = 0;
+            SwitchState(InteractionState.listening);
+        }
+        
     }
 
     public void OnExitInteraction(Component sender, object data)

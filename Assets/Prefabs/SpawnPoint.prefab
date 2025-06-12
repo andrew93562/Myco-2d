@@ -54,7 +54,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -95,7 +95,7 @@ CircleCollider2D:
   m_GameObject: {fileID: 382124367085718776}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 359f85fca65b22e45abf24699856d239, type: 2}
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -115,9 +115,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   needsInput: 0
-  TriggerInteraction: {fileID: 0}
-  EnterInteraction: {fileID: 11400000, guid: 5f27378bc8489c74ea94f96a6578599b, type: 2}
-  ExitInteraction: {fileID: 0}
+  TriggerInteraction: {fileID: 11400000, guid: dab84e6a7ac381d46b5f8d5c7043b493, type: 2}
+  EnterInteraction: {fileID: 11400000, guid: 461c87c748855f549817431e062ad952, type: 2}
+  ExitInteraction: {fileID: 11400000, guid: f250d326145b8604fa576f05382e8ec4, type: 2}
 --- !u!1 &382124367309133778
 GameObject:
   m_ObjectHideFlags: 0

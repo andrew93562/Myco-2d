@@ -56,7 +56,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -97,7 +97,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 2050704488845505128}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 359f85fca65b22e45abf24699856d239, type: 2}
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chargesLeft: 1
-  emptySprite: {fileID: 21300000, guid: 4ec302c062ff7c3458d4d1329b6c9ccd, type: 3}
+  emptySprite: {fileID: -267434939, guid: b33982264860fbe46b4f28a4d880468b, type: 3}
   mannaStationSpriteRenderer: {fileID: 2050704490307135732}
 --- !u!114 &4056720169867982205
 MonoBehaviour:
@@ -143,7 +143,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   needsInput: 0
   TriggerInteraction: {fileID: 0}
-  EnterInteraction: {fileID: 11400000, guid: 9cb796b26775e7a428013dbdfdcd2da6, type: 2}
+  EnterInteraction: {fileID: 11400000, guid: b06851c545980bc4dbdd90efd2eff798, type: 2}
   ExitInteraction: {fileID: 0}
 --- !u!114 &6429088646795540515
 MonoBehaviour:
@@ -152,12 +152,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2050704488845505128}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2d1ef231dbadb7e499d0271c3bb19db9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameEvent: {fileID: 11400000, guid: 9cb796b26775e7a428013dbdfdcd2da6, type: 2}
+  gameEvent: {fileID: 11400000, guid: b06851c545980bc4dbdd90efd2eff798, type: 2}
   response:
     m_PersistentCalls:
       m_Calls:
@@ -226,7 +226,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -247,12 +247,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: de261356106d09441b821d5e5036702c, type: 3}
+  m_Sprite: {fileID: -1585394829, guid: b33982264860fbe46b4f28a4d880468b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 1.125}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

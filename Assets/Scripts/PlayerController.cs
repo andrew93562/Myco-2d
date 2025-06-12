@@ -53,7 +53,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private void Update()
     {
         _time += Time.deltaTime;
-        Debug.Log(_grounded);
+        //Debug.Log(_grounded);
         //revert to 0 on scene change
         GatherInput();
     }
@@ -101,7 +101,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         if (_frameInput.JumpDown)
         {
             _timeJumpWasPressed = _time;
-            Debug.Log(_grounded);
+            //Debug.Log(_grounded);
             //Debug.Log("jump pressed");
         }
         if (_frameInput.JumpUp)
@@ -415,15 +415,22 @@ public class PlayerController : MonoBehaviour, IPlayerController
     
     public void OnMannaRestored(Component sender, object data)
     {
-        //Debug.Log(sender.GetComponent<MannaStation>().chargesLeft);
-        if (sender.GetComponent<MannaStation>().chargesLeft >= 0)
+        //Debug.Log("manna restored 0");
+        if (sender.name != "Player")
         {
-            //Debug.Log("manna restored");
-            playerManna = maxManna;
-            MannaChanged.Raise(this, playerManna);
-            ProjectileCharging.Raise(this, 4);
+            //Debug.Log("manna restored 1");
+            if (sender.GetComponent<MannaStation>().chargesLeft >= 0)
+            {
+                playerManna = maxManna;
+                MannaChanged.Raise(this, playerManna);
+                ProjectileCharging.Raise(this, 4);
+            }
         }
-        //Debug.Log("manna restored");
+        
+        //Debug.Log(sender.name);
+        //Debug.Log(sender.GetComponent<MannaStation>().chargesLeft);
+        
+        //Debug.Log("manna restored 2");
     }
 
     private void ApplyMovement() => _rb.velocity = _frameVelocity;
